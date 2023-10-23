@@ -2,16 +2,22 @@ package data_access;
 
 import entity.User;
 import entity.UserFactory;
+import use_case.clear_users.ClearUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
-public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
+public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface, ClearUserDataAccessInterface {
 
     private final File csvFile;
 
@@ -85,7 +91,6 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         }
     }
 
-
     /**
      * Return whether a user exists with username identifier.
      * @param identifier the username to check.
@@ -96,4 +101,33 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         return accounts.containsKey(identifier);
     }
 
+    @Override
+    public boolean existsUsers() {
+        return !accounts.isEmpty();
+    }
+
+    @Override
+    public ArrayList<String> removeUsers() throws IOException {
+        ArrayList<String> users = new ArrayList<String>();
+        for (String key : accounts.keySet()) {
+            users.add(key);
+        }
+        accounts.clear();
+        Path temp;
+        try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
+                String header = reader.readLine();
+            
+            assert header.equals("username,password,creation_time");
+
+            temp = Files.createTempFile("temp", ".csv");
+
+            try (BufferedWriter writer = Files.newBufferedWriter(temp)) {
+                writer.write(header);
+                writer.newLine();
+            }
+        }
+        Files.move(temp, csvFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        System.out.println(users);
+        return users;
+    }
 }

@@ -1,6 +1,10 @@
 package interface_adapter.clear_users;
 
-// TODO Complete me
-
 public class ClearState {
+    
+    private String clearError = null;
+
+    public void clearError(String error) {
+        this.clearError = error;
+    }
 }

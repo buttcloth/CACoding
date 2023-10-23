@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 
 public abstract class ViewModel {
 
-    private String viewName;
+    protected String viewName;
 
     public ViewModel(String viewName) {
         this.viewName = viewName;
