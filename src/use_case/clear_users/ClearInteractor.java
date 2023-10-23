@@ -5,10 +5,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import javax.print.DocFlavor.STRING;
-
-import interface_adapter.signup.SignupState;
-
 public class ClearInteractor implements ClearInputBoundary {
     final ClearUserDataAccessInterface userDataAccessObject;
     final ClearOutputBoundary userPresenter;
@@ -20,7 +16,7 @@ public class ClearInteractor implements ClearInputBoundary {
     }
 
     @Override
-    public ArrayList<String> execute(SignupState state) throws FileNotFoundException, IOException {
+    public ArrayList<String> execute() throws FileNotFoundException, IOException {
         ArrayList<String> clearedUsers = new ArrayList<String>();
         ClearOutputData clearOutputData = new ClearOutputData(null, false, clearedUsers);
         if (!userDataAccessObject.existsUsers()) {
